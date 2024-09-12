@@ -22,6 +22,7 @@ class MainWindow(Forms.Form):
         - minimizable (bool): Whether to show the MinimizeBox in the window.
         - maxmizable (bool): Whether to show the MaximizeBox in the window.
         - closable (bool): Whether to show the CloseBox in the window.
+        - borderless (bool): Whether the window should have a border or not. Default is True. if set to False it cancel the resizable.
         - on_exit (Callable[[], None]): A callback function to run when the window is closing.
         - on_minimize (Callable[[], None]): A callback function to run when the window is minimized.
         - draggable (bool): Whether the window can be dragged by holding down the mouse button.
@@ -51,6 +52,7 @@ class MainWindow(Forms.Form):
         minimizable: bool = True,
         maxmizable: bool = True,
         closable: bool = True,
+        borderless: bool = True,
         on_exit: Optional[Callable[[], bool]] = None,
         on_minimize: Optional[Callable[[], None]] = None,
         draggable: bool = False
@@ -70,6 +72,7 @@ class MainWindow(Forms.Form):
             - minimizable (bool): Whether to show the MinimizeBox in the window.
             - maxmizable (bool): Whether to show the MaximizeBox in the window.
             - closable (bool): Whether to show the CloseBox in the window.
+            - borderless (bool): Whether the window should have a border or not. Default is True. if set to False it cancel the resizable.
             - on_exit (Callable[[], None]): A callback function to run when the window is closing.
             - on_minimize (Callable[[], None]): A callback function to run when the window is minimized.
             - draggable (bool): Whether the window can be dragged by holding down the mouse button.
@@ -87,6 +90,7 @@ class MainWindow(Forms.Form):
         self._minimizable = minimizable
         self._maxmizable = maxmizable
         self._closable = closable
+        self._borderless = borderless
 
         self._on_exit = on_exit
         self._on_minimize = on_minimize
@@ -114,12 +118,13 @@ class MainWindow(Forms.Form):
             self.StartPosition = Forms.FormStartPosition.Manual
             self.Location = Drawing.Point(self._location[0], self._location[1])
 
-        if resizable:
-            self.FormBorderStyle = Forms.FormBorderStyle.Sizable
-        else:
+        if not self._borderless:
+            self.FormBorderStyle = Forms.FormBorderStyle(0)
+        elif not self._resizable:
             self.FormBorderStyle = Forms.FormBorderStyle.FixedDialog
 
-        self._update_draggable()
+        if draggable:
+            self._update_draggable()
 
         self.FormClosing += self._handle_form_closing
         self.Resize += self._handle_minimize_window
@@ -326,6 +331,27 @@ class MainWindow(Forms.Form):
         """
         self.ControlBox = value
         self._closable = value
+
+
+    
+    @property
+    def borderless(self) -> bool:
+        """
+        Get the borderless state of the window.
+        """
+        return self._borderless
+
+    @borderless.setter
+    def borderless(self, value: bool):
+        """
+        Set the borderless state of the window.
+        """
+        if value:
+            self.FormBorderStyle = Forms.FormBorderStyle(1)
+            self._borderless = True
+        else:
+            self.FormBorderStyle = Forms.FormBorderStyle(0)
+            self._borderless = False
 
 
     
