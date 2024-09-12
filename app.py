@@ -15,6 +15,7 @@ class MainWindow(Forms.Form):
     Args:
         - title (str): The title of the window.
         - size (tuple[int, int]): The size of the window.
+        - content (Optional[type], None): set the window's content.
         - location (tuple[int, int]): The location of the window.
         - center_screen (bool): Whether to center the window on the screen.
         - background_color (Color): The background color of the window.
@@ -82,7 +83,7 @@ class MainWindow(Forms.Form):
         super().__init__()
         self._title = title
         self._size = Drawing.Size(size[0], size[1])
-        self._content_panel = content
+        self._content = content
         self._location = location
         self._center_screen = center_screen
         self._background_color = background_color
@@ -174,16 +175,16 @@ class MainWindow(Forms.Form):
 
     @property
     def content(self) -> Optional[type]:
-        return self._content_panel
+        return self._content
     
 
     @content.setter
     def content(self, new_content: Optional[type]):
         # Remove old content if any
-        if self._content_panel and self._content_panel in self.Controls:
-            self.Controls.Remove(self._content_panel)
+        if self._content and self._content in self.Controls:
+            self.Controls.Remove(self._content)
         # Add new content if provided
-        self._content_panel = new_content
+        self._content = new_content
         if new_content:
             self.Controls.Add(new_content)
 
@@ -468,3 +469,10 @@ class MainWindow(Forms.Form):
         Starts the application and displays the window.
         """
         Forms.Application.Run(self)
+
+
+    def exit(self):
+        """
+        EXit the application.
+        """
+        Forms.Application.Exit()
