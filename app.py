@@ -451,6 +451,16 @@ class MainWindow(Forms.Form):
                 self._on_minimize()
 
 
+
+    def minimize(self):
+        """
+        Minimizes the window.
+        """
+        self.WindowState = Forms.FormWindowState.Minimized
+        if self._on_minimize:
+            self._on_minimize()
+
+
     def hide(self):
         """
         Hide the window.
