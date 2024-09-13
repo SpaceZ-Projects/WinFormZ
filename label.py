@@ -154,6 +154,8 @@ class Label(Forms.Label):
         """
         Sets the font size of the text and updates the label.
         """
+        if value <= 0:
+            raise ValueError("Font size must be a positive integer.")
         self._size = value
         self._update_font()
 
