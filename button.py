@@ -6,44 +6,58 @@ import System.Drawing as Drawing
 import System.Windows.Forms as Forms
 
 from typing import Optional, Callable
+from .color import Color
 
 class Button(Forms.Button):
     """
-    A class to represent a Windows Forms Button with various configurable properties.
-
     Args:
         - text (str): The text displayed on the button.
         - size (tuple[int, int]): The size of the button (width, height).
         - location (tuple[int, int]): The location of the button (x, y).
         - background_color (Optional[Color]): The background color of the button.
         - text_color (Optional[Color]): The color of the text on the button.
+        - icon (Optional[str]): The path to the icon file (.ico, .png, .bmp), absolute path.
         - on_click (Optional[Callable[[], None]]): Callback function to be executed when the button is clicked.
     """
 
     def __init__(
         self,
-        text: str = "Button",
+        text: str = None,
         size: tuple[int, int] = (100, 50),
         location: tuple[int, int] = (0, 0),
-        background_color: Optional[any] = None,
+        background_color: Optional[any] = Color.TRANSPARENT,
         text_color: Optional[any] = None,
+        icon: Optional[str] = None,
         on_click: Optional[Callable[[], None]] = None
     ):
+        """
+        Args:
+            - text (str): The text displayed on the button.
+            - size (tuple[int, int]): The size of the button (width, height).
+            - location (tuple[int, int]): The location of the button (x, y).
+            - background_color (Optional[Color]): The background color of the button.
+            - text_color (Optional[Color]): The color of the text on the button.
+            - icon (Optional[str]): The path to the icon file (.ico, .png, .bmp), absolute path.
+            - on_click (Optional[Callable[[], None]]): Callback function to be executed when the button is clicked.
+        """
         super().__init__()
         self._text = text
         self._size = size
         self._location = location
         self._background_color = background_color
         self._text_color = text_color
+        self._icon = icon
         self._on_click = on_click
         
-        self.Text = self._text
+        if self._text:
+            self.Text = self._text
         self.Size = Drawing.Size(*self._size)
         self.Location = Drawing.Point(*self._location)
-        if self._background_color:
-            self.BackColor = self._background_color
+        self.BackColor = self._background_color
         if self._text_color:
             self.ForeColor = self._text_color
+        if self._icon:
+            self.Image = Drawing.Image.FromFile(self._icon)
         if self._on_click:
             self.Click += self._handle_click
 
@@ -142,6 +156,31 @@ class Button(Forms.Button):
         self._text_color = value
         if value:
             self.ForeColor = value
+
+
+    @property
+    def icon(self) -> Optional[str]:
+        """
+        Gets or sets the path to the icon file for the button.
+        """
+        return self._icon
+
+    @icon.setter
+    def icon(self, value: Optional[str]):
+        """
+        Sets the path to the icon file for the button.
+        
+        Args:
+            value (Optional[str]): The path to the icon file (.ico, .png, .bmp). 
+                                   If None, the icon will be removed.
+        """
+        self._icon = value
+        if value:
+            self.Image = Drawing.Image.FromFile(value)
+        else:
+            self.Image = None
+
+    
 
     @property
     def on_click(self) -> Optional[Callable[[], None]]:
