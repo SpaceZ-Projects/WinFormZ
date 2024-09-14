@@ -8,6 +8,7 @@ import System.Windows.Forms as Forms
 from typing import Optional, Callable, Tuple
 from pathlib import Path
 from .color import Color
+from .font import Font, Style
 
 class Button(Forms.Button):
     """
@@ -17,7 +18,11 @@ class Button(Forms.Button):
         - location (Tuple[int, int]): The location of the button (x, y).
         - background_color (Optional[Color]): The background color of the button.
         - text_color (Optional[Color]): The color of the text on the button.
+        - text_size (Optional[int]): The font size of the text on the button.
+        - text_font (Optional[Font]): The font of the text on the button.
+        - text_style (Optional[Style]): The style of the font (e.g., regular, bold, italic).
         - icon (Optional[str]): The path to the icon file (.ico, .png, .bmp), absolute path.
+        - popup (Optional[str]): The text to display as a tooltip when hovering over the button.
         - on_click (Optional[Callable[[], None]]): Callback function to be executed when the button is clicked.
     """
 
@@ -28,7 +33,11 @@ class Button(Forms.Button):
         location: Tuple[int, int] = (0, 0),
         background_color: Optional[Color] = Color.TRANSPARENT,
         text_color: Optional[Color] = None,
+        text_size: Optional[int] = None,
+        text_font: Optional[Font] = None,
+        text_style: Optional[Style] = None,
         icon: Optional[Path] = None,
+        popup: Optional[str] = None,
         on_click: Optional[Callable[[], None]] = None
     ):
         """
@@ -38,7 +47,10 @@ class Button(Forms.Button):
             - location (Tuple[int, int]): The location of the button (x, y).
             - background_color (Optional[Color]): The background color of the button.
             - text_color (Optional[Color]): The color of the text on the button.
+            - text_size (Optional[int]): The font size of the text on the button.
+            - text_style (Optional[Style]): The style of the font (e.g., regular, bold, italic).
             - icon (Optional[str]): The path to the icon file (.ico, .png, .bmp), absolute path.
+            - popup (Optional[str]): The text to display as a tooltip when hovering over the button.
             - on_click (Optional[Callable[[], None]]): Callback function to be executed when the button is clicked.
         """
         super().__init__()
@@ -47,20 +59,44 @@ class Button(Forms.Button):
         self._location = location
         self._background_color = background_color
         self._text_color = text_color
+        self._text_size = text_size
+        self._text_font = text_font
+        self._text_style = text_style
         self._icon = icon
+        self._popup = popup
         self._on_click = on_click
+
+        self._tooltip = Forms.ToolTip()
         
         if self._text:
             self.Text = self._text
+
         self.Size = Drawing.Size(*self._size)
         self.Location = Drawing.Point(*self._location)
         self.BackColor = self._background_color
+
         if self._text_color:
             self.ForeColor = self._text_color
+
         if self._icon:
             self.Image = Drawing.Image.FromFile(self._icon)
+
+        self._set_font()
+
         if self._on_click:
             self.Click += self._handle_click
+
+        if self._popup:
+            self._tooltip.SetToolTip(self, self._popup)
+
+
+    def _set_font(self):
+        """Sets the font for the button based on the provided text_font, text_size, and text_style."""
+        font_family = self._text_font or Font.SERIF
+        font_size = self._text_size or 10
+        font_style = self._text_style or Style.REGULAR
+        
+        self.Font = Drawing.Font(font_family, font_size, font_style)
 
             
 
@@ -160,6 +196,25 @@ class Button(Forms.Button):
 
 
     @property
+    def text_size(self) -> Optional[int]:
+
+        return self._text_size
+    
+
+
+    @text_size.setter
+    def text_size(self, value: Optional[int]):
+        self._text_size = value
+        if value:
+            self.Font = Drawing.Font(self.Font.FontFamily, value)
+        else:
+            # Optionally, you can reset to a default font size if needed
+            self.Font = Drawing.Font(self.Font.FontFamily, 10)
+
+
+
+
+    @property
     def icon(self) -> Optional[str]:
         """
         Gets or sets the path to the icon file for the button.
@@ -180,6 +235,21 @@ class Button(Forms.Button):
             self.Image = Drawing.Image.FromFile(value)
         else:
             self.Image = None
+
+
+    @property
+    def popup(self) -> Optional[str]:
+        return self._popup
+
+
+
+    @popup.setter
+    def popup(self, value: Optional[str]):
+        self._popup = value
+        if value:
+            self._tooltip.SetToolTip(self, value)
+        else:
+            self._tooltip.RemoveAll()
 
     
 
