@@ -8,7 +8,27 @@ import System.Windows.Forms as Forms
 import System as Sys
 
 from typing import Callable, Optional, Type, Tuple
+from pathlib import Path
 from .color import Color
+
+
+class App:
+    _icon = None
+
+    @classmethod
+    def set_icon(cls, icon_path: Optional[Path]):
+        if icon_path:
+            try:
+                cls._icon = Drawing.Icon(str(icon_path))
+            except Exception as e:
+                print(f"Error setting icon: {e}")
+        else:
+            cls._icon = None
+
+    @classmethod
+    def get_icon(cls) -> Optional[Drawing.Icon]:
+        return cls._icon
+
 
 
 class MainWindow(Forms.Form):
@@ -25,6 +45,7 @@ class MainWindow(Forms.Form):
         - maxmizable (bool): Whether to show the MaximizeBox in the window.
         - closable (bool): Whether to show the CloseBox in the window.
         - borderless (bool): Whether the window should have a border or not. Default is True. if set to False it cancel the resizable.
+        - icon (Optional[Path]): The path to the window's icon.
         - on_exit (Callable[[Type], None]): A callback function to run when the window is closing.
         - on_minimize (Callable[[Type], None]): A callback function to run when the window is minimized.
         - draggable (bool): Whether the window can be dragged by holding down the mouse button.
@@ -55,6 +76,7 @@ class MainWindow(Forms.Form):
         maxmizable: bool = True,
         closable: bool = True,
         borderless: bool = True,
+        icon: Optional[Path] = None,
         on_exit: Optional[Callable[[Type], bool]] = None,
         on_minimize: Optional[Callable[[Type], None]] = None,
         draggable: bool = False
@@ -75,6 +97,7 @@ class MainWindow(Forms.Form):
             - maxmizable (bool): Whether to show the MaximizeBox in the window.
             - closable (bool): Whether to show the CloseBox in the window.
             - borderless (bool): Whether the window should have a border or not. Default is True. if set to False it cancel the resizable.
+            - icon (Optional[Path]): The path to the window's icon.
             - on_exit (Callable[[Type], None]): A callback function to run when the window is closing.
             - on_minimize (Callable[[Type], None]): A callback function to run when the window is minimized.
             - draggable (bool): Whether the window can be dragged by holding down the mouse button.
@@ -93,6 +116,7 @@ class MainWindow(Forms.Form):
         self._maxmizable = maxmizable
         self._closable = closable
         self._borderless = borderless
+        self._icon = icon
 
         self._on_exit = on_exit
         self._on_minimize = on_minimize
@@ -103,6 +127,10 @@ class MainWindow(Forms.Form):
 
         self.Text = self._title
         self.Size = self._size
+
+        if self._icon:
+            App.set_icon(self._icon)
+            self.Icon = App.get_icon()
 
         if background_color:
             self.BackColor = self._background_color
@@ -356,6 +384,26 @@ class MainWindow(Forms.Form):
             self._borderless = False
 
 
+
+    @property
+    def icon(self) -> Optional[Path]:
+        """
+        Get the path to the app icon file.
+        """
+        return self._icon
+    
+
+
+    @icon.setter
+    def icon(self, value: Optional[Drawing.Icon]):
+        """
+        Set the path to the app icon file.
+        """
+        self._icon = value
+        App.set_icon(value)
+        self.Icon = App.get_icon()
+
+
     
     @property
     def on_exit(self) -> Optional[Callable[[], bool]]:
@@ -448,7 +496,7 @@ class MainWindow(Forms.Form):
         Handle the Resize event to check if the window is minimized.
         """
         if self.WindowState == Forms.FormWindowState.Minimized:
-            if callable(self._on_minimize):
+            if Callable(self._on_minimize):
                 self._on_minimize()
 
 
@@ -460,6 +508,13 @@ class MainWindow(Forms.Form):
         self.WindowState = Forms.FormWindowState.Minimized
         if self._on_minimize:
             self._on_minimize()
+
+    
+    def activate(self):
+        """
+        Set as current window
+        """
+        self.Activate()
 
 
     def hide(self):

@@ -1,6 +1,7 @@
 
 from .app import MainWindow
 from .window import Window
+from .splash import Splash
 from .box import Box
 from .button import Button
 from .label import Label

@@ -9,6 +9,7 @@ import System as Sys
 
 from typing import Callable, Optional, Tuple, Type
 from .color import Color
+from .app import App
 
 
 class Window(Forms.Form):
@@ -92,6 +93,10 @@ class Window(Forms.Form):
 
         self.Text = self._title
         self.Size = self._size
+
+        app_icon = App.get_icon()
+        if app_icon:
+            self.Icon = app_icon
 
         if background_color:
             self.BackColor = self._background_color
@@ -437,6 +442,13 @@ class Window(Forms.Form):
         if self.WindowState == Forms.FormWindowState.Minimized:
             if callable(self._on_minimize):
                 self._on_minimize()
+
+
+    def activate(self):
+        """
+        Set as current window
+        """
+        self.Activate()
 
 
     def hide(self):
