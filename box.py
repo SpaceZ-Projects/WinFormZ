@@ -5,27 +5,27 @@ clr.AddReference('System.Drawing')
 import System.Drawing as Drawing
 import System.Windows.Forms as Forms
 
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Tuple
 from .color import Color
 
 class Box(Forms.Panel):
     """
     Args:
-        - size (tuple[int, int]): The size of the box (width, height).
-        - location (tuple[int, int]): The location of the box (x, y).
+        - size (Tuple[int, int]): The size of the box (width, height).
+        - location (Tuple[int, int]): The location of the box (x, y).
         - background_color (Optional[Color]): The background color of the box.
     """
 
     def __init__(
         self,
-        size: tuple[int, int] = (100, 100),
-        location: tuple[int, int] = (0, 0),
-        background_color: Optional[any] = None
+        size: Tuple[int, int] = (100, 100),
+        location: Tuple[int, int] = (0, 0),
+        background_color: Optional[Color] = None
     ):
         """
         Args:
-            - size (tuple[int, int]): The size of the box (width, height).
-            - location (tuple[int, int]): The location of the box (x, y).
+            - size (Tuple[int, int]): The size of the box (width, height).
+            - location (Tuple[int, int]): The location of the box (x, y).
             - background_color (Optional[Color]): The background color of the box.
         """
         super().__init__()
@@ -40,25 +40,25 @@ class Box(Forms.Panel):
 
 
     @property
-    def size(self) -> tuple[int, int]:
+    def size(self) -> Tuple[int, int]:
         """
         Gets or sets the size of the box (width, height).
         """
         return self._size
 
     @size.setter
-    def size(self, value: tuple[int, int]):
+    def size(self, value: Tuple[int, int]):
         """
         Sets the size of the box.
         
         Args:
-            value (tuple[int, int]): The width and height of the box.
+            value (Tuple[int, int]): The width and height of the box.
         """
         self._size = value
         self.Size = Drawing.Size(*value)
 
     @property
-    def location(self) -> tuple[int, int]:
+    def location(self) -> Tuple[int, int]:
         """
         Gets or sets the location of the box (x, y).
         """

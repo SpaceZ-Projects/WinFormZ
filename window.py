@@ -7,16 +7,17 @@ import System.Drawing as Drawing
 import System.Windows.Forms as Forms
 import System as Sys
 
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple, Type
+from .color import Color
 
 
 class Window(Forms.Form):
     """
     Args:
         - title (str): The title of the window.
-        - size (tuple[int, int]): The size of the window.
+        - size (Tuple[int, int]): The size of the window.
         - content (Optional[type], None): set the window's content.
-        - location (tuple[int, int]): The location of the window.
+        - location (Tuple[int, int]): The location of the window.
         - center_screen (bool): Whether to center the window on the screen.
         - background_color (Color): The background color of the window.
         - resizable (bool): Whether the window should be resizable.
@@ -36,26 +37,26 @@ class Window(Forms.Form):
     def __init__(
         self,
         title: str = "SpaceZ App",
-        size: tuple[int, int] = (800, 600),
-        content: Optional[type] = None,
-        location: tuple[int, int] = (100, 100),
+        size: Tuple[int, int] = (800, 600),
+        content: Optional[Type] = None,
+        location: Tuple[int, int] = (100, 100),
         center_screen: bool = False,
-        background_color: Optional[any] = None,
+        background_color: Optional[Color] = None,
         resizable: bool = True,
         minimizable: bool = True,
         maxmizable: bool = True,
         closable: bool = True,
         borderless: bool = True,
-        on_close: Optional[Callable[[], bool]] = None,
-        on_minimize: Optional[Callable[[], None]] = None,
+        on_close: Optional[Callable[[Type], bool]] = None,
+        on_minimize: Optional[Callable[[Type], None]] = None,
         draggable: bool = False
     ):
         """
         Args:
             - title (str): The title of the window.
-            - size (tuple[int, int]): The size of the window.
+            - size (Tuple[int, int]): The size of the window.
             - content (Optional[type], None): set the window's content.
-            - location (tuple[int, int]): The location of the window.
+            - location (Tuple[int, int]): The location of the window.
             - center_screen (bool): Whether to center the window on the screen.
             - background_color (Color): The background color of the window.
             - resizable (bool): Whether the window should be resizable.
@@ -143,30 +144,30 @@ class Window(Forms.Form):
     @property
     def size(self):
         """
-        Get the window's size as a tuple.
+        Get the window's size as a Tuple.
         """
         return (self.Size.Width, self.Size.Height)
     
 
     @size.setter
-    def size(self, new_size: tuple[int, int]):
+    def size(self, new_size: Tuple[int, int]):
         """
         Set the window's size.
 
         Args:
-            new_size (tuple[int, int]): The new size of the window (width, height).
+            new_size (Tuple[int, int]): The new size of the window (width, height).
         """
         self._size = Drawing.Size(new_size[0], new_size[1])
         self.Size = self._size
 
 
     @property
-    def content(self) -> Optional[type]:
+    def content(self) -> Optional[Type]:
         return self._content
     
 
     @content.setter
-    def content(self, new_content: Optional[type]):
+    def content(self, new_content: Optional[Type]):
         # Remove old content if any
         if self._content and self._content in self.Controls:
             self.Controls.Remove(self._content)
@@ -177,31 +178,31 @@ class Window(Forms.Form):
 
     
     @property
-    def location(self) -> tuple[int, int]:
+    def location(self) -> Tuple[int, int]:
         """
         Get the window's location.
 
         Returns:
-            tuple[int, int]: The location of the window (x, y).
+            Tuple[int, int]: The location of the window (x, y).
         """
         return (self.Location.X, self.Location.Y)
 
     @location.setter
-    def location(self, new_location: tuple[int, int]):
+    def location(self, new_location: Tuple[int, int]):
         """
         Set the window's location.
 
         Args:
-            new_location (tuple[int, int]): The new location of the window (x, y).
+            new_location (Tuple[int, int]): The new location of the window (x, y).
         """
         self._set_location(new_location)
 
-    def _set_location(self, location: tuple[int, int]):
+    def _set_location(self, location: Tuple[int, int]):
         """
         Set the window's location.
 
         Args:
-            location (tuple[int, int]): The new location of the window (x, y).
+            location (Tuple[int, int]): The new location of the window (x, y).
         """
         self._location = location  # Update internal location state
         if not self._center_screen:
@@ -209,7 +210,7 @@ class Window(Forms.Form):
 
 
     @property
-    def background_color(self) -> Optional[any]:
+    def background_color(self) -> Optional[Color]:
         """
         Get the background color of the window.
 
@@ -219,7 +220,7 @@ class Window(Forms.Form):
         return self._background_color
 
     @background_color.setter
-    def background_color(self, color: Optional[any]):
+    def background_color(self, color: Optional[Color]):
         """
         Set the background color of the window.
 
@@ -344,14 +345,14 @@ class Window(Forms.Form):
 
     
     @property
-    def on_close(self) -> Optional[Callable[[], bool]]:
+    def on_close(self) -> Optional[Callable[[Type], bool]]:
         """
         Get the callback function to run when the window is closing.
         """
         return self._on_exit
 
     @on_close.setter
-    def on_close(self, handler: Optional[Callable[[], bool]]):
+    def on_close(self, handler: Optional[Callable[[Type], bool]]):
         """
         Set the callback function to run when the window is closing.
 
@@ -362,12 +363,12 @@ class Window(Forms.Form):
 
     
     @property
-    def on_minimize(self) -> Optional[Callable[[], None]]:
+    def on_minimize(self) -> Optional[Callable[[Type], None]]:
         return self._on_minimize
     
 
     @on_minimize.setter
-    def on_minimize(self, handler: Optional[Callable[[], None]]):
+    def on_minimize(self, handler: Optional[Callable[[Type], None]]):
         self._on_minimize = handler
 
 

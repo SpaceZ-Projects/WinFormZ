@@ -7,16 +7,17 @@ import System.Drawing as Drawing
 import System.Windows.Forms as Forms
 import System as Sys
 
-from typing import Callable, Optional
+from typing import Callable, Optional, Type, Tuple
+from .color import Color
 
 
 class MainWindow(Forms.Form):
     """
     Args:
         - title (str): The title of the window.
-        - size (tuple[int, int]): The size of the window.
-        - content (Optional[type], None): set the window's content.
-        - location (tuple[int, int]): The location of the window.
+        - size (Tuple[int, int]): The size of the window.
+        - content (Optional[Type], None): set the window's content.
+        - location (Tuple[int, int]): The location of the window.
         - center_screen (bool): Whether to center the window on the screen.
         - background_color (Color): The background color of the window.
         - resizable (bool): Whether the window should be resizable.
@@ -24,8 +25,8 @@ class MainWindow(Forms.Form):
         - maxmizable (bool): Whether to show the MaximizeBox in the window.
         - closable (bool): Whether to show the CloseBox in the window.
         - borderless (bool): Whether the window should have a border or not. Default is True. if set to False it cancel the resizable.
-        - on_exit (Callable[[], None]): A callback function to run when the window is closing.
-        - on_minimize (Callable[[], None]): A callback function to run when the window is minimized.
+        - on_exit (Callable[[Type], None]): A callback function to run when the window is closing.
+        - on_minimize (Callable[[Type], None]): A callback function to run when the window is minimized.
         - draggable (bool): Whether the window can be dragged by holding down the mouse button.
 
     Methods:
@@ -44,18 +45,18 @@ class MainWindow(Forms.Form):
     def __init__(
         self,
         title: str = "SpaceZ App",
-        size: tuple[int, int] = (800, 600),
-        content: Optional[type] = None,
-        location: tuple[int, int] = (100, 100),
+        size: Tuple[int, int] = (800, 600),
+        content: Optional[Type] = None,
+        location: Tuple[int, int] = (100, 100),
         center_screen: bool = False,
-        background_color: Optional[any] = None,
+        background_color: Optional[Color] = None,
         resizable: bool = True,
         minimizable: bool = True,
         maxmizable: bool = True,
         closable: bool = True,
         borderless: bool = True,
-        on_exit: Optional[Callable[[], bool]] = None,
-        on_minimize: Optional[Callable[[], None]] = None,
+        on_exit: Optional[Callable[[Type], bool]] = None,
+        on_minimize: Optional[Callable[[Type], None]] = None,
         draggable: bool = False
     ):
         if hasattr(self, '_initialized') and self._initialized:
@@ -64,9 +65,9 @@ class MainWindow(Forms.Form):
         """
         Args:
             - title (str): The title of the window.
-            - size (tuple[int, int]): The size of the window.
-            - content (Optional[type], None): set the window's content.
-            - location (tuple[int, int]): The location of the window.
+            - size (Tuple[int, int]): The size of the window.
+            - content (Optional[Type], None): set the window's content.
+            - location (Tuple[int, int]): The location of the window.
             - center_screen (bool): Whether to center the window on the screen.
             - background_color (Color): The background color of the window.
             - resizable (bool): Whether the window should be resizable.
@@ -74,8 +75,8 @@ class MainWindow(Forms.Form):
             - maxmizable (bool): Whether to show the MaximizeBox in the window.
             - closable (bool): Whether to show the CloseBox in the window.
             - borderless (bool): Whether the window should have a border or not. Default is True. if set to False it cancel the resizable.
-            - on_exit (Callable[[], None]): A callback function to run when the window is closing.
-            - on_minimize (Callable[[], None]): A callback function to run when the window is minimized.
+            - on_exit (Callable[[Type], None]): A callback function to run when the window is closing.
+            - on_minimize (Callable[[Type], None]): A callback function to run when the window is minimized.
             - draggable (bool): Whether the window can be dragged by holding down the mouse button.
         Methods:
             - run: Starts the application and displays the window.
@@ -111,7 +112,7 @@ class MainWindow(Forms.Form):
         self.ControlBox = self._closable
 
         if content:
-            self.Controls.Add(self._content_panel)
+            self.Controls.Add(self._content)
 
         if center_screen:
             self.StartPosition = Forms.FormStartPosition.CenterScreen
@@ -174,12 +175,12 @@ class MainWindow(Forms.Form):
 
 
     @property
-    def content(self) -> Optional[type]:
+    def content(self) -> Optional[Type]:
         return self._content
     
 
     @content.setter
-    def content(self, new_content: Optional[type]):
+    def content(self, new_content: Optional[Type]):
         # Remove old content if any
         if self._content and self._content in self.Controls:
             self.Controls.Remove(self._content)
@@ -209,7 +210,7 @@ class MainWindow(Forms.Form):
         """
         self._set_location(new_location)
 
-    def _set_location(self, location: tuple[int, int]):
+    def _set_location(self, location: Tuple[int, int]):
         """
         Set the window's location.
 
@@ -222,7 +223,7 @@ class MainWindow(Forms.Form):
 
 
     @property
-    def background_color(self) -> Optional[any]:
+    def background_color(self) -> Optional[Color]:
         """
         Get the background color of the window.
 
@@ -232,7 +233,7 @@ class MainWindow(Forms.Form):
         return self._background_color
 
     @background_color.setter
-    def background_color(self, color: Optional[any]):
+    def background_color(self, color: Optional[Color]):
         """
         Set the background color of the window.
 

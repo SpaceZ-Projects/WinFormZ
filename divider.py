@@ -5,28 +5,26 @@ clr.AddReference('System.Drawing')
 import System.Drawing as Drawing
 import System.Windows.Forms as Forms
 
-from typing import Optional
+from typing import Optional, Tuple
 from .color import Color
 
 class Divider(Forms.Panel):
     """
-    A class to represent a divider line (separator) with configurable properties.
-
     Args:
         - direction (str): The direction of the divider line ('horizontal' or 'vertical').
         - width (int): The width of the divider line in pixels.
         - color (Optional[Color]): The color of the divider line.
-        - location (tuple[int, int]): The location of the divider line (x, y).
-        - size (tuple[int, int]): The size of the divider line (width, height).
+        - location (Tuple[int, int]): The location of the divider line (x, y).
+        - size (Tuple[int, int]): The size of the divider line (width, height).
     """
 
     def __init__(
         self,
         direction: str = 'horizontal',
         width: int = 2,
-        color: Optional[any] = Color.BLACK,
-        location: tuple[int, int] = (0, 0),
-        size: tuple[int, int] = (100, 2)
+        color: Optional[Color] = Color.BLACK,
+        location: Tuple[int, int] = (0, 0),
+        size: Tuple[int, int] = (100, 2)
     ):
         super().__init__()
         self._direction = direction
@@ -98,37 +96,37 @@ class Divider(Forms.Panel):
         self.Invalidate()  # Redraw the divider line
 
     @property
-    def location(self) -> tuple[int, int]:
+    def location(self) -> Tuple[int, int]:
         """
         Gets or sets the location of the divider line (x, y).
         """
         return self._location
 
     @location.setter
-    def location(self, value: tuple[int, int]):
+    def location(self, value: Tuple[int, int]):
         """
         Sets the location of the divider line.
         
         Args:
-            value (tuple[int, int]): The x and y coordinates of the divider line.
+            value (Tuple[int, int]): The x and y coordinates of the divider line.
         """
         self._location = value
         self.Location = Drawing.Point(*value)
 
     @property
-    def size(self) -> tuple[int, int]:
+    def size(self) -> Tuple[int, int]:
         """
         Gets or sets the size of the divider line (width, height).
         """
         return self._size
 
     @size.setter
-    def size(self, value: tuple[int, int]):
+    def size(self, value: Tuple[int, int]):
         """
         Sets the size of the divider line.
         
         Args:
-            value (tuple[int, int]): The width and height of the divider line.
+            value (Tuple[int, int]): The width and height of the divider line.
         """
         self._size = value
         self.Size = Drawing.Size(*value)

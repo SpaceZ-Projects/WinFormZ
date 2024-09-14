@@ -5,15 +5,16 @@ clr.AddReference('System.Drawing')
 import System.Drawing as Drawing
 import System.Windows.Forms as Forms
 
-from typing import Optional, Callable
+from typing import Optional, Callable, Tuple
+from pathlib import Path
 from .color import Color
 
 class Button(Forms.Button):
     """
     Args:
         - text (str): The text displayed on the button.
-        - size (tuple[int, int]): The size of the button (width, height).
-        - location (tuple[int, int]): The location of the button (x, y).
+        - size (Tuple[int, int]): The size of the button (width, height).
+        - location (Tuple[int, int]): The location of the button (x, y).
         - background_color (Optional[Color]): The background color of the button.
         - text_color (Optional[Color]): The color of the text on the button.
         - icon (Optional[str]): The path to the icon file (.ico, .png, .bmp), absolute path.
@@ -23,18 +24,18 @@ class Button(Forms.Button):
     def __init__(
         self,
         text: str = None,
-        size: tuple[int, int] = (100, 50),
-        location: tuple[int, int] = (0, 0),
-        background_color: Optional[any] = Color.TRANSPARENT,
-        text_color: Optional[any] = None,
-        icon: Optional[str] = None,
+        size: Tuple[int, int] = (100, 50),
+        location: Tuple[int, int] = (0, 0),
+        background_color: Optional[Color] = Color.TRANSPARENT,
+        text_color: Optional[Color] = None,
+        icon: Optional[Path] = None,
         on_click: Optional[Callable[[], None]] = None
     ):
         """
         Args:
             - text (str): The text displayed on the button.
-            - size (tuple[int, int]): The size of the button (width, height).
-            - location (tuple[int, int]): The location of the button (x, y).
+            - size (Tuple[int, int]): The size of the button (width, height).
+            - location (Tuple[int, int]): The location of the button (x, y).
             - background_color (Optional[Color]): The background color of the button.
             - text_color (Optional[Color]): The color of the text on the button.
             - icon (Optional[str]): The path to the icon file (.ico, .png, .bmp), absolute path.
@@ -82,37 +83,37 @@ class Button(Forms.Button):
         self.Text = value
 
     @property
-    def size(self) -> tuple[int, int]:
+    def size(self) -> Tuple[int, int]:
         """
         Gets or sets the size of the button (width, height).
         """
         return self._size
 
     @size.setter
-    def size(self, value: tuple[int, int]):
+    def size(self, value: Tuple[int, int]):
         """
         Sets the size of the button.
         
         Args:
-            value (tuple[int, int]): The width and height of the button.
+            value (Tuple[int, int]): The width and height of the button.
         """
         self._size = value
         self.Size = Drawing.Size(*value)
 
     @property
-    def location(self) -> tuple[int, int]:
+    def location(self) -> Tuple[int, int]:
         """
         Gets or sets the location of the button (x, y).
         """
         return self._location
 
     @location.setter
-    def location(self, value: tuple[int, int]):
+    def location(self, value: Tuple[int, int]):
         """
         Sets the location of the button.
         
         Args:
-            value (tuple[int, int]): The x and y coordinates of the button.
+            value (Tuple[int, int]): The x and y coordinates of the button.
         """
         self._location = value
         self.Location = Drawing.Point(*value)
