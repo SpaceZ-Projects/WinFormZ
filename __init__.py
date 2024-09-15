@@ -7,6 +7,7 @@ from .button import Button
 from .label import Label
 from .divider import Divider
 from .textinput import TextInput
+from .image import ImageBox
 from .dialog import Dialog, MessageButtons, MessageIcon
 from .notify import NotifyIcon
 from .color import Color
